@@ -27,7 +27,6 @@ public class Interactable : MonoBehaviour
                 {
                     Debug.Log("Picking up " + item.itemName);
                     PlayerController._hasInteracted = false;
-                    Inventory.instance.Add(item);
                     bool wasPickedUp = Inventory.instance.Add(item);
                     if (wasPickedUp)
                     {
