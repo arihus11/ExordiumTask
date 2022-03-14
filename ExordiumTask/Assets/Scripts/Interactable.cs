@@ -7,16 +7,11 @@ public class Interactable : MonoBehaviour
     private bool _isInRange = false;
     public bool destroyable;
     public static string itemInRange = "";
+    public Item item;
     // Start is called before the first frame update
     void Start()
     {
         itemInRange = "";
-    }
-
-    public virtual void Interact()
-    {
-        //Override method on interaction
-        Debug.Log("Do something.");
     }
 
     // Update is called once per frame
@@ -26,11 +21,27 @@ public class Interactable : MonoBehaviour
         {
             //Give permission to interact
             //  Debug.Log(itemInRange);
-            if (PlayerController._hasInteracted && destroyable == true)
+            if (PlayerController._hasInteracted)
             {
-                PlayerController._hasInteracted = false;
-                Destroy(this.gameObject);
+                if (destroyable == true)
+                {
+                    Debug.Log("Picking up " + item.itemName);
+                    PlayerController._hasInteracted = false;
+                    Inventory.instance.Add(item);
+                    bool wasPickedUp = Inventory.instance.Add(item);
+                    if (wasPickedUp)
+                    {
+                        Destroy(this.gameObject);
+                    }
+                }
+
+                else
+                {
+                    Debug.Log("Interacting with " + item.itemName);
+                    PlayerController._hasInteracted = false;
+                }
             }
+
         }
 
     }
