@@ -7,6 +7,7 @@ public class Inventory : MonoBehaviour
     //Create simple singleton pattern for Inventory recognition
     #region Singleton
     public static Inventory instance;
+    private Animator _usageText, _fullInventory;
 
 
     void Awake()
@@ -27,13 +28,19 @@ public class Inventory : MonoBehaviour
     public OnItemChanged onItemChangedCallback;
     public int emptySpace = 40;
 
+    void Start()
+    {
+        _usageText = GameObject.Find("UsageText").gameObject.GetComponent<Animator>();
+        _fullInventory = GameObject.Find("NoMoreSpaceText").gameObject.GetComponent<Animator>();
+    }
     public bool Add(Item item)
     {
         if (!item.notAddable)
         {
             if (items.Count >= emptySpace)
             {
-                Debug.Log("Inventory is full!");
+                Debug.LogWarning("Inventory is full!");
+                DisplayMessage();
                 return false;
             }
             else
@@ -56,6 +63,14 @@ public class Inventory : MonoBehaviour
         {
             onItemChangedCallback.Invoke();
         }
+    }
+
+    void DisplayMessage()
+    {
+
+        _usageText.Play("Idle_Message", -1, 0f);
+        _fullInventory.Play("Interactable_Text", -1, 0f);
+
     }
 
 

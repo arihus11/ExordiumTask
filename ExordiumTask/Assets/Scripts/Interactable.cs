@@ -8,10 +8,13 @@ public class Interactable : MonoBehaviour
     public bool destroyable;
     public static string itemInRange = "";
     public Item item;
+    private Animator _usageText, _fullInventory;
     // Start is called before the first frame update
     void Start()
     {
         itemInRange = "";
+        _usageText = GameObject.Find("UsageText").gameObject.GetComponent<Animator>();
+        _fullInventory = GameObject.Find("NoMoreSpaceText").gameObject.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -50,7 +53,7 @@ public class Interactable : MonoBehaviour
     {
         _isInRange = true;
         itemInRange = (this.gameObject.name).ToString();
-        GameObject.Find("UsageText").gameObject.GetComponent<Animator>().Play("Interactable_Text", -1, 0f);
+        _usageText.Play("Interactable_Text", -1, 0f);
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -74,6 +77,7 @@ public class Interactable : MonoBehaviour
     {
         _isInRange = false;
         itemInRange = "";
-        GameObject.Find("UsageText").gameObject.GetComponent<Animator>().Play("Interactable_Text_Reverse", -1, 0f);
+        _usageText.Play("Idle_Message", -1, 0f);
+        _fullInventory.Play("Idle_Message", -1, 0f);
     }
 }

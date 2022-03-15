@@ -10,4 +10,23 @@ namespace Character.Utils
         RightMoving,
         DownwardMoving
     }
+
+    public enum UsageType
+    {
+        PermanentUsage,
+        Pickup,
+
+    }
+
+
+    public enum SlotEquipType
+    {
+        None,
+        Head,
+        Torso,
+        MainHand,
+        OffHand
+
+    }
+
 }

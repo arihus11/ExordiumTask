@@ -15,3 +15,6 @@ MonoBehaviour:
   itemName: Armor
   icon: {fileID: 0}
   notAddable: 0
+  stackable: 0
+  useType: 1
+  equipType: 0
