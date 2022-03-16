@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour, IPointerClickHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
 {
     public GameObject icon;
     public Item item;
@@ -46,14 +47,44 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (eventData != null && eventData.button == PointerEventData.InputButton.Right)
+        if (eventData.button == PointerEventData.InputButton.Right)
         {
+            Debug.Log("RIGHT CLICK2");
             if (item != null && OnRightClickEvent != null)
             {
-                Debug.Log("RIGHT CLICK");
+                Debug.Log("RIGHT CLICK3");
                 OnRightClickEvent(item);
             }
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+
+    }
+    public void OnPointerExit(PointerEventData eventData)
+    {
+
+    }
+    public void OnPointerDrag(PointerEventData eventData)
+    {
+
+    }
+    Vector2 originalPosition;
+
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        originalPosition = icon.transform.position;
+    }
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        icon.transform.position = originalPosition;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        icon.transform.position = Input.mousePosition;
     }
 
 }
