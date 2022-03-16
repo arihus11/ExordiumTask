@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Inventory : MonoBehaviour
 {
@@ -8,10 +9,16 @@ public class Inventory : MonoBehaviour
     #region Singleton
     public static Inventory instance;
     private Animator _usageText, _fullInventory;
+    [SerializeField] InventorySlot[] itemSlots;
 
-
-    void Awake()
+    public event Action<Item> OnItemRightClickEvent;
+    private void Awake()
     {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            itemSlots[i].OnRightClickEvent += OnItemRightClickEvent;
+        }
+
         if (instance != null)
         {
             Debug.LogWarning(("More than on inventory exists!"));
@@ -56,13 +63,14 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public void Remove(Item item)
+    public bool Remove(Item item)
     {
         items.Remove(item);
         if (onItemChangedCallback != null)
         {
             onItemChangedCallback.Invoke();
         }
+        return true;
     }
 
     void DisplayMessage()

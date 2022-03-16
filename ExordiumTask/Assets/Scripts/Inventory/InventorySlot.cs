@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour
+public class InventorySlot : MonoBehaviour, IPointerClickHandler
 {
     public GameObject icon;
-    Item item;
+    public Item item;
+    public event Action<Item> OnRightClickEvent;
     public Button removeButton;
     public void AddItem(Item newItem)
     {
@@ -38,6 +41,18 @@ public class InventorySlot : MonoBehaviour
         if (item != null)
         {
             item.Use();
+        }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData != null && eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (item != null && OnRightClickEvent != null)
+            {
+                Debug.Log("RIGHT CLICK");
+                OnRightClickEvent(item);
+            }
         }
     }
 

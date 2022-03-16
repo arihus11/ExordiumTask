@@ -19,13 +19,12 @@ namespace Character.Utils
     }
 
 
-    public enum SlotEquipType
+    public enum EquipmentType
     {
-        None,
-        Head,
-        Torso,
-        MainHand,
-        OffHand
+        Helmet,
+        Armor,
+        Sword,
+        Shield
 
     }
 

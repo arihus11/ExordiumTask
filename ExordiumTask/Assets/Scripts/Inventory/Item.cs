@@ -7,7 +7,6 @@ public class Item : ScriptableObject
     public Sprite icon = null;
     public bool notAddable = false;
     public UsageType useType;
-    public SlotEquipType equipType;
     public bool stackable;
     public string stackLimit;
 
