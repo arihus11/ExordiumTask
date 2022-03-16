@@ -21,11 +21,5 @@ public class AttributesUI : MonoBehaviour
         {
             attributesUI.SetActive(!attributesUI.activeSelf);
         }
-        if (Input.GetButtonDown("FullStats"))
-        {
-            attributesUI.SetActive(!attributesUI.activeSelf);
-            equipUI.SetActive(!equipUI.activeSelf);
-            invUI.SetActive(!invUI.activeSelf);
-        }
     }
 }

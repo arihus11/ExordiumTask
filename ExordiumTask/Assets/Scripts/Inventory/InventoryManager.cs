@@ -10,7 +10,7 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] EquipUi equipmentPanel;
     [SerializeField] Image draggableItem;
 
-    private InventorySlot draggedSlot;
+    private InventorySlot _draggedSlot;
 
     private void Awake()
     {
@@ -96,7 +96,7 @@ public class InventoryManager : MonoBehaviour
         if (itemSlot.item != null)
         {
             Vector3 mousePosition = new Vector2(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-            draggedSlot = itemSlot;
+            _draggedSlot = itemSlot;
             draggableItem.sprite = itemSlot.item.icon;
             draggableItem.transform.position = mousePosition;
             draggableItem.enabled = true;
@@ -104,7 +104,7 @@ public class InventoryManager : MonoBehaviour
     }
     private void EndDrag(InventorySlot itemSlot)
     {
-        draggedSlot = null;
+        _draggedSlot = null;
         draggableItem.enabled = false;
     }
     private void Drag(InventorySlot itemSlot)
@@ -118,12 +118,12 @@ public class InventoryManager : MonoBehaviour
     }
     private void Drop(InventorySlot dropItemSlot)
     {
-        if (dropItemSlot.CanReceiveItem(draggedSlot.item) && draggedSlot.CanReceiveItem(dropItemSlot.item))
+        if (dropItemSlot.CanReceiveItem(_draggedSlot.item) && _draggedSlot.CanReceiveItem(dropItemSlot.item))
         {
-            EquipableItem dragItem = draggedSlot.item as EquipableItem;
+            EquipableItem dragItem = _draggedSlot.item as EquipableItem;
             EquipableItem dropItem = dropItemSlot.item as EquipableItem;
 
-            if (draggedSlot is EquipSlot)
+            if (_draggedSlot is EquipSlot)
             {
                 if (dragItem != null) dragItem.Unequip(this);
                 if (dropItem != null) dropItem.Equip(this);
@@ -135,8 +135,8 @@ public class InventoryManager : MonoBehaviour
                 if (dropItem != null) dropItem.Unequip(this);
             }
 
-            Item draggedItem = draggedSlot.item;
-            draggedSlot.item = dropItemSlot.item;
+            Item draggedItem = _draggedSlot.item;
+            _draggedSlot.item = dropItemSlot.item;
             dropItemSlot.item = draggedItem;
         }
 

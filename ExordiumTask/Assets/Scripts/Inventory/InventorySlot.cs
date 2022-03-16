@@ -10,9 +10,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 {
     public GameObject icon;
     public Item item;
-
-    private Color normalColor = Color.white;
-    private Color disabledColor = new Color(1, 1, 1, 0);
     public event Action<InventorySlot> OnRightClickEvent;
     public event Action<InventorySlot> OnBeginDragEvent;
     public event Action<InventorySlot> OnPointerEnterEvent;
