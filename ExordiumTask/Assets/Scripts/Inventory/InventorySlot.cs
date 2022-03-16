@@ -18,6 +18,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public event Action<InventorySlot> OnDragEvent;
     public event Action<InventorySlot> OnDropEvent;
     public Button removeButton;
+    public static bool spawnNewItem = false;
+    public static string removedItemName;
     public void AddItem(Item newItem)
     {
         item = newItem;
@@ -45,6 +47,8 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     public void OnRemoveButton()
     {
+        removedItemName = item.itemName;
+        spawnNewItem = true;
         Inventory.instance.Remove(item);
     }
 
