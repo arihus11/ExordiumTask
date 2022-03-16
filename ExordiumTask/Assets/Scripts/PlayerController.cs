@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     public Transform transformParent;
     public GameObject[] objectSpawn;
     private bool _oneSpawn = false;
+    private int _closePanels = 0;
+    public GameObject[] inventories;
     private int _randomSide, _randomNumber, _lastRandom, _itemPosition;
 
     private Vector3 _spawnVector;
@@ -16,6 +18,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _oneSpawn = false;
+        _closePanels = 0;
     }
 
     // Update is called once per frame
@@ -27,6 +30,31 @@ public class PlayerController : MonoBehaviour
             {
                 _hasInteracted = true;
             }
+        }
+        else if (Input.GetKey(KeyCode.Tab))
+        {
+            if (!_oneSpawn)
+            {
+                _oneSpawn = true;
+                _closePanels++;
+                Invoke("ChangeSwitch", 0.2f);
+            }
+            if (_closePanels == 1)
+            {
+                for (int i = 0; i < inventories.Length; i++)
+                {
+                    inventories[i].SetActive(true);
+                }
+            }
+            else if (_closePanels == 2)
+            {
+                _closePanels = 0;
+                for (int i = 0; i < inventories.Length; i++)
+                {
+                    inventories[i].SetActive(false);
+                }
+            }
+
         }
         else if (Input.GetKey(KeyCode.Space) || InventorySlot.spawnNewItem == true)
         {

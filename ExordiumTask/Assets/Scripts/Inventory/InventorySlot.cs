@@ -18,6 +18,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public event Action<InventorySlot> OnDragEvent;
     public event Action<InventorySlot> OnDropEvent;
     public Button removeButton;
+    public GameObject stackCounter;
     public static bool spawnNewItem = false;
     public static string removedItemName;
     public void AddItem(Item newItem)
@@ -28,6 +29,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         icon.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         removeButton.interactable = true;
         removeButton.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+        stackCounter.gameObject.SetActive(true);
     }
 
     public virtual bool CanReceiveItem(Item item)
