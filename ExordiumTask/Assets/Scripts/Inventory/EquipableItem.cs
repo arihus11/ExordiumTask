@@ -15,4 +15,16 @@ public class EquipableItem : Item
     public float IntelligencePercentBonus;
     public float VitalityPercentBonus;
     public EquipmentType EquipmentType;
+
+    //Change attribute values here
+
+    public bool Equip(InventoryManager x)
+    {
+        return true;
+    }
+
+    public bool Unequip(InventoryManager x)
+    {
+        return true;
+    }
 }

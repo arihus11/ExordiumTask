@@ -13,12 +13,24 @@ public class Inventory : MonoBehaviour
     private Animator _usageText, _fullInventory;
     [SerializeField] InventorySlot[] itemSlots;
 
-    public event Action<Item> OnItemRightClickEvent;
+    public event Action<InventorySlot> OnRightClickEvent;
+    public event Action<InventorySlot> OnBeginDragEvent;
+    public event Action<InventorySlot> OnPointerEnterEvent;
+    public event Action<InventorySlot> OnPointerExitEvent;
+    public event Action<InventorySlot> OnEndDragEvent;
+    public event Action<InventorySlot> OnDragEvent;
+    public event Action<InventorySlot> OnDropEvent;
     private void Awake()
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            itemSlots[i].OnRightClickEvent += OnItemRightClickEvent;
+            itemSlots[i].OnRightClickEvent += OnRightClickEvent;
+            itemSlots[i].OnPointerEnterEvent += OnPointerEnterEvent;
+            itemSlots[i].OnPointerExitEvent += OnPointerExitEvent;
+            itemSlots[i].OnBeginDragEvent += OnBeginDragEvent;
+            itemSlots[i].OnEndDragEvent += OnEndDragEvent;
+            itemSlots[i].OnDragEvent += OnDragEvent;
+            itemSlots[i].OnDropEvent += OnDropEvent;
         }
 
         if (instance != null)
@@ -67,10 +79,29 @@ public class Inventory : MonoBehaviour
 
     public bool Remove(Item item)
     {
-        items.Remove(item);
-        if (onItemChangedCallback != null)
+        for (int i = 0; i < itemSlots.Length; i++)
         {
-            onItemChangedCallback.Invoke();
+            if (itemSlots[i].item == item)
+            {
+                items.Remove(item);
+                if (onItemChangedCallback != null)
+                {
+                    onItemChangedCallback.Invoke();
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool IsFull()
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i].item == null)
+            {
+                return false;
+            }
         }
         return true;
     }

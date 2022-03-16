@@ -11,12 +11,24 @@ public class EquipUi : MonoBehaviour
     [SerializeField] Transform equipmentSlotsParent;
     [SerializeField] EquipSlot[] equipmentSlots;
     public GameObject equipUI;
-    public event Action<Item> OnItemRightClickEvent;
+    public event Action<InventorySlot> OnRightClickEvent;
+    public event Action<InventorySlot> OnBeginDragEvent;
+    public event Action<InventorySlot> OnPointerEnterEvent;
+    public event Action<InventorySlot> OnPointerExitEvent;
+    public event Action<InventorySlot> OnEndDragEvent;
+    public event Action<InventorySlot> OnDragEvent;
+    public event Action<InventorySlot> OnDropEvent;
     void Awake()
     {
         for (int i = 0; i < equipmentSlots.Length; i++)
         {
-            equipmentSlots[i].OnRightClickEvent += OnItemRightClickEvent;
+            equipmentSlots[i].OnRightClickEvent += OnRightClickEvent;
+            equipmentSlots[i].OnPointerEnterEvent += OnPointerEnterEvent;
+            equipmentSlots[i].OnPointerExitEvent += OnPointerExitEvent;
+            equipmentSlots[i].OnBeginDragEvent += OnBeginDragEvent;
+            equipmentSlots[i].OnEndDragEvent += OnEndDragEvent;
+            equipmentSlots[i].OnDragEvent += OnDragEvent;
+            equipmentSlots[i].OnDropEvent += OnDropEvent;
         }
     }
     void Start()
