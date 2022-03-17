@@ -14,7 +14,7 @@ namespace Character.Utils
     public enum UsageType
     {
         PermanentUsage,
-        Pickup,
+        Pickup
 
     }
 
@@ -26,6 +26,12 @@ namespace Character.Utils
         Sword,
         Shield
 
+    }
+
+    public enum StackType
+    {
+        Unlimited,
+        Limited
     }
 
 }

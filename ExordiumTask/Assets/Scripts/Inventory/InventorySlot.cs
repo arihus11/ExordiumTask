@@ -91,12 +91,16 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             OnPointerExitEvent(this);
         }
     }
-    Vector2 originalPosition;
-
+    Vector2 originalPositionIcon, originalPositionStacks;
+    GameObject counterParent;
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        originalPosition = icon.transform.position;
+        originalPositionIcon = icon.transform.position;
+        originalPositionStacks = stackCounter.transform.position;
+        counterParent = stackCounter.transform.parent.gameObject;
+        stackCounter.transform.SetParent(icon.transform);
+
         if (OnBeginDragEvent != null)
         {
             OnBeginDragEvent(this);
@@ -105,7 +109,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     }
     public void OnEndDrag(PointerEventData eventData)
     {
-        icon.transform.position = originalPosition;
+        icon.transform.position = originalPositionIcon;
+        stackCounter.transform.SetParent(counterParent.transform);
+        stackCounter.transform.position = originalPositionStacks;
         if (OnEndDragEvent != null)
         {
             OnEndDragEvent(this);

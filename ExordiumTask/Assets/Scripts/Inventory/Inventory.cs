@@ -21,7 +21,7 @@ public class Inventory : MonoBehaviour
     public event Action<InventorySlot> OnEndDragEvent;
     public event Action<InventorySlot> OnDragEvent;
     public event Action<InventorySlot> OnDropEvent;
-    private Animator _notStackable;
+    private Animator _notStackable, _limitReached;
     private void Awake()
     {
         for (int i = 0; i < itemSlots.Length; i++)
@@ -56,6 +56,7 @@ public class Inventory : MonoBehaviour
         _usageText = GameObject.Find("UsageText").gameObject.GetComponent<Animator>();
         _fullInventory = GameObject.Find("NoMoreSpaceText").gameObject.GetComponent<Animator>();
         _notStackable = GameObject.Find("NotStackable").gameObject.GetComponent<Animator>();
+        _limitReached = GameObject.Find("LimitReached").gameObject.GetComponent<Animator>();
     }
     public bool Add(Item item)
     {
@@ -63,30 +64,74 @@ public class Inventory : MonoBehaviour
         {
             if (item.stackable)
             {
-                if (items.Count >= emptySpace)
+                if (item.stackLimit == Character.Utils.StackType.Unlimited)
                 {
-                    Debug.LogWarning("Inventory is full!");
-                    DisplayMessage();
-                    return false;
-                }
-                else
-                {
-                    for (int i = 0; i < itemSlots.Length; i++)
-                    {
-                        if (itemSlots[i].item == item)
-                        {
-                            Debug.Log("Item alredy exists!");
-                            itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text = (int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text) + 1).ToString();
-                            return true;
-                        }
 
-                    }
-                    items.Add(item);
-                    if (onItemChangedCallback != null)
+
+                    if (items.Count >= emptySpace)
                     {
-                        onItemChangedCallback.Invoke();
+                        Debug.LogWarning("Inventory is full!");
+                        DisplayMessage();
+                        return false;
                     }
-                    return true;
+                    else
+                    {
+                        for (int i = 0; i < itemSlots.Length; i++)
+                        {
+                            if (itemSlots[i].item == item)
+                            {
+                                Debug.Log("Item alredy exists!");
+                                itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = (int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text) + 1).ToString();
+                                return true;
+                            }
+
+                        }
+                        items.Add(item);
+                        if (onItemChangedCallback != null)
+                        {
+                            onItemChangedCallback.Invoke();
+                        }
+                        return true;
+                    }
+                }
+                else if (item.stackLimit == Character.Utils.StackType.Limited)
+                {
+
+                    if (items.Count >= emptySpace)
+                    {
+                        Debug.LogWarning("Inventory is full!");
+                        DisplayMessage();
+                        return false;
+                    }
+                    else
+                    {
+                        for (int i = 0; i < itemSlots.Length; i++)
+                        {
+                            if (itemSlots[i].item == item)
+                            {
+                                Debug.Log("Item alredy exists!");
+                                if ((int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text) < item.stackAmount))
+                                {
+                                    itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = (int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text) + 1).ToString();
+                                    return true;
+                                }
+                                else
+                                {
+                                    Debug.Log(item.itemName + " limit reached!");
+                                    _limitReached.Play("Interactable_Text", -1, 0f);
+                                    Invoke("ChangeTextLimit", 0.7f);
+                                    return false;
+                                }
+                            }
+
+                        }
+                        items.Add(item);
+                        if (onItemChangedCallback != null)
+                        {
+                            onItemChangedCallback.Invoke();
+                        }
+                        return true;
+                    }
                 }
             }
             else
@@ -96,7 +141,7 @@ public class Inventory : MonoBehaviour
                     if (itemSlots[i].item == item)
                     {
                         _notStackable.Play("Interactable_Text", -1, 0f);
-                        Invoke("ChangeText", 0.7f);
+                        Invoke("ChangeTextStackble", 0.7f);
                         return false;
                     }
                 }
@@ -120,9 +165,13 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public void ChangeText()
+    public void ChangeTextStackble()
     {
         _notStackable.Play("Idle_Message", -1, 0f);
+    }
+    public void ChangeTextLimit()
+    {
+        _limitReached.Play("Idle_Message", -1, 0f);
     }
     public bool Remove(Item item)
     {
@@ -132,14 +181,14 @@ public class Inventory : MonoBehaviour
             {
                 if (itemSlots[i].item == item)
                 {
-                    if ((int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text) > 1))
+                    if ((int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text) > 1))
                     {
-                        itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text = (int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text) - 1).ToString();
+                        itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = (int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text) - 1).ToString();
                         return true;
                     }
                     else
                     {
-                        itemSlots[i].gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                        itemSlots[i].gameObject.transform.GetChild(2).gameObject.SetActive(false);
                         items.Remove(item);
                         if (onItemChangedCallback != null)
                         {
@@ -156,7 +205,7 @@ public class Inventory : MonoBehaviour
             {
                 if (itemSlots[i].item == item)
                 {
-                    itemSlots[i].gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                    itemSlots[i].gameObject.transform.GetChild(2).gameObject.SetActive(false);
                     items.Remove(item);
                     if (onItemChangedCallback != null)
                     {
@@ -188,6 +237,17 @@ public class Inventory : MonoBehaviour
         _usageText.Play("Idle_Message", -1, 0f);
         _fullInventory.Play("Interactable_Text", -1, 0f);
 
+    }
+
+    void Update()
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i].item == null)
+            {
+                itemSlots[i].gameObject.transform.GetChild(2).gameObject.SetActive(false);
+            }
+        }
     }
 
 

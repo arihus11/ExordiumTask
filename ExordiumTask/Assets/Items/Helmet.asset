@@ -17,7 +17,8 @@ MonoBehaviour:
   notAddable: 0
   useType: 1
   stackable: 1
-  stackLimit: 
+  stackLimit: 1
+  stackAmount: 3
   StrengthBonus: 0
   AgilityBonus: 0
   IntelligenceBonus: 0

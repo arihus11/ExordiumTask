@@ -8,7 +8,8 @@ public class Item : ScriptableObject
     public bool notAddable = false;
     public UsageType useType;
     public bool stackable;
-    public string stackLimit;
+    public StackType stackLimit;
+    public int stackAmount;
 
     public virtual void Use()
     {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Character.Utils;
 
 public class Interactable : MonoBehaviour
 {
@@ -9,9 +10,11 @@ public class Interactable : MonoBehaviour
     public static string itemInRange = "";
     public Item item;
     private Animator _usageText, _fullInventory;
+    public bool thisItemInRange = false;
     // Start is called before the first frame update
     void Start()
     {
+        thisItemInRange = false;
         itemInRange = "";
         _usageText = GameObject.Find("UsageText").gameObject.GetComponent<Animator>();
         _fullInventory = GameObject.Find("NoMoreSpaceText").gameObject.GetComponent<Animator>();
@@ -22,11 +25,12 @@ public class Interactable : MonoBehaviour
     {
         if (_isInRange)
         {
+            thisItemInRange = true;
             //Give permission to interact
             //  Debug.Log(itemInRange);
             if (PlayerController._hasInteracted)
             {
-                if (destroyable == true)
+                if (destroyable == true && item.useType == UsageType.Pickup)
                 {
                     Debug.Log("Picking up " + item.itemName);
                     PlayerController._hasInteracted = false;
@@ -36,6 +40,12 @@ public class Interactable : MonoBehaviour
                         Destroy(this.gameObject);
                     }
                 }
+                else if (destroyable == true && item.useType == UsageType.PermanentUsage)
+                {
+                    Debug.Log("Consuming " + item.itemName);
+                    PlayerController._hasInteracted = false;
+                    Destroy(this.gameObject);
+                }
 
                 else
                 {
@@ -44,6 +54,10 @@ public class Interactable : MonoBehaviour
                 }
             }
 
+        }
+        else
+        {
+            thisItemInRange = false;
         }
 
     }
