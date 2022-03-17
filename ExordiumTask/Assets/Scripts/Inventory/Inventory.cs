@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEngine.EventSystems;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class Inventory : MonoBehaviour
     public event Action<InventorySlot> OnEndDragEvent;
     public event Action<InventorySlot> OnDragEvent;
     public event Action<InventorySlot> OnDropEvent;
+    private Animator _notStackable;
     private void Awake()
     {
         for (int i = 0; i < itemSlots.Length; i++)
@@ -53,43 +55,117 @@ public class Inventory : MonoBehaviour
     {
         _usageText = GameObject.Find("UsageText").gameObject.GetComponent<Animator>();
         _fullInventory = GameObject.Find("NoMoreSpaceText").gameObject.GetComponent<Animator>();
+        _notStackable = GameObject.Find("NotStackable").gameObject.GetComponent<Animator>();
     }
     public bool Add(Item item)
     {
         if (!item.notAddable)
         {
-            if (items.Count >= emptySpace)
+            if (item.stackable)
             {
-                Debug.LogWarning("Inventory is full!");
-                DisplayMessage();
-                return false;
+                if (items.Count >= emptySpace)
+                {
+                    Debug.LogWarning("Inventory is full!");
+                    DisplayMessage();
+                    return false;
+                }
+                else
+                {
+                    for (int i = 0; i < itemSlots.Length; i++)
+                    {
+                        if (itemSlots[i].item == item)
+                        {
+                            Debug.Log("Item alredy exists!");
+                            itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text = (int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text) + 1).ToString();
+                            return true;
+                        }
+
+                    }
+                    items.Add(item);
+                    if (onItemChangedCallback != null)
+                    {
+                        onItemChangedCallback.Invoke();
+                    }
+                    return true;
+                }
             }
             else
             {
-                items.Add(item);
-                if (onItemChangedCallback != null)
+                for (int i = 0; i < itemSlots.Length; i++)
                 {
-                    onItemChangedCallback.Invoke();
+                    if (itemSlots[i].item == item)
+                    {
+                        _notStackable.Play("Interactable_Text", -1, 0f);
+                        Invoke("ChangeText", 0.7f);
+                        return false;
+                    }
                 }
-                return true;
+                if (items.Count >= emptySpace)
+                {
+                    Debug.LogWarning("Inventory is full!");
+                    DisplayMessage();
+                    return false;
+                }
+                else
+                {
+                    items.Add(item);
+                    if (onItemChangedCallback != null)
+                    {
+                        onItemChangedCallback.Invoke();
+                    }
+                    return true;
+                }
             }
         }
         return false;
     }
 
+    public void ChangeText()
+    {
+        _notStackable.Play("Idle_Message", -1, 0f);
+    }
     public bool Remove(Item item)
     {
-        for (int i = 0; i < itemSlots.Length; i++)
+        if (item.stackable)
         {
-            if (itemSlots[i].item == item)
+            for (int i = 0; i < itemSlots.Length; i++)
             {
-                items.Remove(item);
-                if (onItemChangedCallback != null)
+                if (itemSlots[i].item == item)
                 {
-                    onItemChangedCallback.Invoke();
+                    if ((int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text) > 1))
+                    {
+                        itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text = (int.Parse(itemSlots[i].stackCounter.gameObject.transform.GetChild(0).gameObject.GetComponent<Text>().text) - 1).ToString();
+                        return true;
+                    }
+                    else
+                    {
+                        itemSlots[i].gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                        items.Remove(item);
+                        if (onItemChangedCallback != null)
+                        {
+                            onItemChangedCallback.Invoke();
+                        }
+                        return true;
+                    }
                 }
-                return true;
             }
+        }
+        else
+        {
+            for (int i = 0; i < itemSlots.Length; i++)
+            {
+                if (itemSlots[i].item == item)
+                {
+                    itemSlots[i].gameObject.transform.GetChild(0).gameObject.SetActive(false);
+                    items.Remove(item);
+                    if (onItemChangedCallback != null)
+                    {
+                        onItemChangedCallback.Invoke();
+                    }
+                    return true;
+                }
+            }
+            return false;
         }
         return false;
     }

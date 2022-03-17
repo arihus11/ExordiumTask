@@ -24,12 +24,14 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public void AddItem(Item newItem)
     {
         item = newItem;
-
         icon.gameObject.GetComponent<SpriteRenderer>().sprite = item.icon;
         icon.gameObject.GetComponent<SpriteRenderer>().enabled = true;
         removeButton.interactable = true;
         removeButton.gameObject.transform.GetChild(0).gameObject.SetActive(true);
-        stackCounter.gameObject.SetActive(true);
+        if ((Inventory.instance.items.Contains(item)))
+        {
+            stackCounter.gameObject.SetActive(true);
+        }
     }
 
     public virtual bool CanReceiveItem(Item item)
