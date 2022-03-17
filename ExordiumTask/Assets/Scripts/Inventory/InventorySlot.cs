@@ -18,9 +18,12 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     public event Action<InventorySlot> OnDragEvent;
     public event Action<InventorySlot> OnDropEvent;
     public Button removeButton;
+<<<<<<< HEAD
     public GameObject stackCounter;
     public static bool spawnNewItem = false;
     public static string removedItemName;
+=======
+>>>>>>> parent of c40d3de (Create object spawning for discarded items)
     public void AddItem(Item newItem)
     {
         item = newItem;
@@ -49,8 +52,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
 
     public void OnRemoveButton()
     {
-        removedItemName = item.itemName;
-        spawnNewItem = true;
         Inventory.instance.Remove(item);
     }
 

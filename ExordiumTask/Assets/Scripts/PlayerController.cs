@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public static bool _hasInteracted = false;
+<<<<<<< HEAD
     public Transform transformParent;
     public GameObject[] objectSpawn;
     private bool _oneSpawn = false;
@@ -13,12 +14,18 @@ public class PlayerController : MonoBehaviour
     private int _randomSide, _randomNumber, _lastRandom, _itemPosition;
 
     private Vector3 _spawnVector;
+=======
+>>>>>>> parent of c40d3de (Create object spawning for discarded items)
 
     // Start is called before the first frame update
     void Start()
     {
+<<<<<<< HEAD
         _oneSpawn = false;
         _closePanels = 0;
+=======
+
+>>>>>>> parent of c40d3de (Create object spawning for discarded items)
     }
 
     // Update is called once per frame
@@ -31,6 +38,7 @@ public class PlayerController : MonoBehaviour
                 _hasInteracted = true;
             }
         }
+<<<<<<< HEAD
         else if (Input.GetKey(KeyCode.Tab))
         {
             if (!_oneSpawn)
@@ -94,51 +102,7 @@ public class PlayerController : MonoBehaviour
     void ChangeSwitch()
     {
         _oneSpawn = false;
+=======
+>>>>>>> parent of c40d3de (Create object spawning for discarded items)
     }
-
-    void ClaculateRandomPosition()
-    {
-        _randomNumber = Random.Range(0, objectSpawn.Length);
-        _randomSide = RandomRangeExcept(0, 6, _lastRandom);
-        _lastRandom = _randomSide;
-        #region Switch
-        switch (_randomSide)
-        {
-            case 0:
-                _spawnVector = this.gameObject.transform.position + new Vector3(0, 1, 0);
-                break;
-            case 1:
-                _spawnVector = this.gameObject.transform.position - new Vector3(0, 1, 0);
-                break;
-            case 2:
-                _spawnVector = this.gameObject.transform.position + new Vector3(1, 0, 0);
-                break;
-            case 3:
-                _spawnVector = this.gameObject.transform.position - new Vector3(1, 0, 0);
-                break;
-            case 4:
-                _spawnVector = this.gameObject.transform.position + new Vector3(1, 1, 0);
-                break;
-            case 5:
-                _spawnVector = this.gameObject.transform.position - new Vector3(1, 1, 0);
-                break;
-            default:
-                break;
-        }
-        #endregion
-    }
-
-
-    public int RandomRangeExcept(int min, int max, int except)
-    {
-        int number;
-        do
-        {
-            number = Random.Range(min, max);
-        } while (number == except);
-        return number;
-    }
-
-
-
 }
