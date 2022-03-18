@@ -1,5 +1,6 @@
 # ExordiumTask
 For Unity Programmer Assignment
+
 1. 
 Kretanje lika implementirano je u potpunosti prema zahtjevima te se za kretanje koriste tipke W,A,S,D ili strelice. Pripadajuće skripte vezane za zahtjeve su:
 	CameraController - implementirano da kamera prati igrača 
